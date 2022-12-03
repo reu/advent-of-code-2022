@@ -1,10 +1,6 @@
-use std::{
-    collections::{HashMap, HashSet},
-    fs,
-    io::{self, BufRead, BufReader},
-    path::Path,
-};
+use std::collections::{HashMap, HashSet};
 
+use advent::read_input;
 use itertools::Itertools;
 use once_cell::sync::Lazy;
 
@@ -15,22 +11,15 @@ static TYPES: Lazy<HashMap<char, usize>> = Lazy::new(|| {
         .collect()
 });
 
-fn main() -> io::Result<()> {
+fn main() -> std::io::Result<()> {
     println!("Part1: {}", part1(read_input("inputs/day-03.txt")?));
     println!("Part2: {}", part2(read_input("inputs/day-03.txt")?));
     Ok(())
 }
 
-fn read_input(path: impl AsRef<Path>) -> io::Result<impl Iterator<Item = String>> {
-    Ok(BufReader::new(fs::File::open(path)?)
-        .lines()
-        .filter_map(|line| line.ok())
-        .map(|line| line.trim().to_owned())
-        .filter(|line| !line.is_empty()))
-}
-
 fn part1(input: impl Iterator<Item = String>) -> usize {
     input
+        .filter(|line| !line.is_empty())
         .map(|line| {
             let (c1, c2) = line.split_at(line.len() / 2);
             c1.chars()
@@ -48,6 +37,7 @@ fn part1(input: impl Iterator<Item = String>) -> usize {
 
 fn part2(input: impl Iterator<Item = String>) -> usize {
     input
+        .filter(|line| !line.is_empty())
         .chunks(3)
         .into_iter()
         .filter_map(|group| {
@@ -66,15 +56,9 @@ fn part2(input: impl Iterator<Item = String>) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use advent::static_input;
 
-    fn test_input(input: &'static str) -> impl Iterator<Item = String> {
-        input
-            .lines()
-            .map(|line| line.trim())
-            .filter(|line| !line.is_empty())
-            .map(|line| line.to_owned())
-    }
+    use super::*;
 
     #[test]
     fn test_part1() {
@@ -87,7 +71,7 @@ mod tests {
             CrZsJsPPZsGzwwsLwLmpwMDw
         ";
 
-        assert_eq!(part1(test_input(input)), 157);
+        assert_eq!(part1(static_input(input)), 157);
     }
 
     #[test]
@@ -101,6 +85,6 @@ mod tests {
             CrZsJsPPZsGzwwsLwLmpwMDw
         ";
 
-        assert_eq!(part2(test_input(input)), 70);
+        assert_eq!(part2(static_input(input)), 70);
     }
 }
