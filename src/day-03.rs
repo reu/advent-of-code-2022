@@ -1,4 +1,9 @@
-use std::collections::{HashMap, HashSet};
+use std::{
+    collections::{HashMap, HashSet},
+    fs,
+    io::{self, BufRead, BufReader},
+    path::Path,
+};
 
 use itertools::Itertools;
 use once_cell::sync::Lazy;
@@ -10,23 +15,24 @@ static TYPES: Lazy<HashMap<char, usize>> = Lazy::new(|| {
         .collect()
 });
 
-fn main() {
-    let input = include_str!("../inputs/day-03.txt");
-    println!("{}", part1(input));
-    println!("{}", part2(input));
+fn main() -> io::Result<()> {
+    println!("Part1: {}", part1(read_input("inputs/day-03.txt")?));
+    println!("Part2: {}", part2(read_input("inputs/day-03.txt")?));
+    Ok(())
 }
 
-fn lines(input: &str) -> impl Iterator<Item = &str> {
-    input
+fn read_input(path: impl AsRef<Path>) -> io::Result<impl Iterator<Item = String>> {
+    Ok(BufReader::new(fs::File::open(path)?)
         .lines()
-        .map(|line| line.trim())
-        .filter(|line| !line.is_empty())
+        .filter_map(|line| line.ok())
+        .map(|line| line.trim().to_owned())
+        .filter(|line| !line.is_empty()))
 }
 
-fn part1(input: &str) -> usize {
-    lines(input)
-        .map(|line| line.split_at(line.len() / 2))
-        .map(|(c1, c2)| {
+fn part1(input: impl Iterator<Item = String>) -> usize {
+    input
+        .map(|line| {
+            let (c1, c2) = line.split_at(line.len() / 2);
             c1.chars()
                 .filter(|c| c2.contains(*c))
                 .collect::<HashSet<char>>()
@@ -40,8 +46,8 @@ fn part1(input: &str) -> usize {
         .sum()
 }
 
-fn part2(input: &str) -> usize {
-    lines(input)
+fn part2(input: impl Iterator<Item = String>) -> usize {
+    input
         .chunks(3)
         .into_iter()
         .filter_map(|group| {
@@ -62,22 +68,16 @@ fn part2(input: &str) -> usize {
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_part_01() {
-        let input = "
-            vJrwpWtwJgWrhcsFMMfFFhFp
-            jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-            PmmdzqPrVvPwwTWBwg
-            wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-            ttgJtRGJQctTZtZT
-            CrZsJsPPZsGzwwsLwLmpwMDw
-        ";
-
-        assert_eq!(part1(input), 157);
+    fn test_input(input: &'static str) -> impl Iterator<Item = String> {
+        input
+            .lines()
+            .map(|line| line.trim())
+            .filter(|line| !line.is_empty())
+            .map(|line| line.to_owned())
     }
 
     #[test]
-    fn test_part_02() {
+    fn test_part1() {
         let input = "
             vJrwpWtwJgWrhcsFMMfFFhFp
             jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
@@ -87,6 +87,20 @@ mod tests {
             CrZsJsPPZsGzwwsLwLmpwMDw
         ";
 
-        assert_eq!(part2(input), 70);
+        assert_eq!(part1(test_input(input)), 157);
+    }
+
+    #[test]
+    fn test_part2() {
+        let input = "
+            vJrwpWtwJgWrhcsFMMfFFhFp
+            jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+            PmmdzqPrVvPwwTWBwg
+            wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+            ttgJtRGJQctTZtZT
+            CrZsJsPPZsGzwwsLwLmpwMDw
+        ";
+
+        assert_eq!(part2(test_input(input)), 70);
     }
 }
