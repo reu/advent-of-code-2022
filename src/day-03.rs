@@ -57,34 +57,26 @@ fn part2(input: impl Iterator<Item = String>) -> usize {
 #[cfg(test)]
 mod tests {
     use advent::static_input;
+    use indoc::indoc;
 
     use super::*;
 
+    const INPUT: &'static str = indoc! {"
+        vJrwpWtwJgWrhcsFMMfFFhFp
+        jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+        PmmdzqPrVvPwwTWBwg
+        wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+        ttgJtRGJQctTZtZT
+        CrZsJsPPZsGzwwsLwLmpwMDw
+    "};
+
     #[test]
     fn test_part1() {
-        let input = "
-            vJrwpWtwJgWrhcsFMMfFFhFp
-            jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-            PmmdzqPrVvPwwTWBwg
-            wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-            ttgJtRGJQctTZtZT
-            CrZsJsPPZsGzwwsLwLmpwMDw
-        ";
-
-        assert_eq!(part1(static_input(input)), 157);
+        assert_eq!(part1(static_input(INPUT)), 157);
     }
 
     #[test]
     fn test_part2() {
-        let input = "
-            vJrwpWtwJgWrhcsFMMfFFhFp
-            jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-            PmmdzqPrVvPwwTWBwg
-            wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-            ttgJtRGJQctTZtZT
-            CrZsJsPPZsGzwwsLwLmpwMDw
-        ";
-
-        assert_eq!(part2(static_input(input)), 70);
+        assert_eq!(part2(static_input(INPUT)), 70);
     }
 }

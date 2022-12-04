@@ -20,5 +20,6 @@ name = "day-04"
 path = "src/day-04.rs"
 
 [dependencies]
+indoc = "1.0.7"
 itertools = "0.10.5"
 once_cell = "1.16.0"

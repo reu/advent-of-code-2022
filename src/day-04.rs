@@ -42,34 +42,26 @@ fn parse_assignments(input: &str) -> Option<RangeInclusive<usize>> {
 #[cfg(test)]
 mod tests {
     use advent::static_input;
+    use indoc::indoc;
 
     use super::*;
 
+    const INPUT: &'static str = indoc! {"
+        2-4,6-8
+        2-3,4-5
+        5-7,7-9
+        2-8,3-7
+        6-6,4-6
+        2-6,4-8
+    "};
+
     #[test]
     fn test_part1() {
-        let input = "
-            2-4,6-8
-            2-3,4-5
-            5-7,7-9
-            2-8,3-7
-            6-6,4-6
-            2-6,4-8
-        ";
-
-        assert_eq!(part1(static_input(input)), 2);
+        assert_eq!(part1(static_input(INPUT)), 2);
     }
 
     #[test]
     fn test_part2() {
-        let input = "
-            2-4,6-8
-            2-3,4-5
-            5-7,7-9
-            2-8,3-7
-            6-6,4-6
-            2-6,4-8
-        ";
-
-        assert_eq!(part2(static_input(input)), 4);
+        assert_eq!(part2(static_input(INPUT)), 4);
     }
 }

@@ -101,26 +101,23 @@ fn part2(input: impl Iterator<Item = String>) -> usize {
 #[cfg(test)]
 mod tests {
     use advent::static_input;
+    use indoc::indoc;
 
     use super::*;
 
+    const INPUT: &'static str = indoc! {"
+        A Y
+        B X
+        C Z
+    "};
+
     #[test]
     fn test_part1() {
-        let input = "
-            A Y
-            B X
-            C Z
-        ";
-        assert_eq!(part1(static_input(input)), 15);
+        assert_eq!(part1(static_input(INPUT)), 15);
     }
 
     #[test]
     fn test_part2() {
-        let input = "
-            A Y
-            B X
-            C Z
-        ";
-        assert_eq!(part2(static_input(input)), 12);
+        assert_eq!(part2(static_input(INPUT)), 12);
     }
 }
