@@ -15,6 +15,10 @@ path = "src/day-02.rs"
 name = "day-03"
 path = "src/day-03.rs"
 
+[[bin]]
+name = "day-04"
+path = "src/day-04.rs"
+
 [dependencies]
 itertools = "0.10.5"
 once_cell = "1.16.0"
