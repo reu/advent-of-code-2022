@@ -19,7 +19,12 @@ path = "src/day-03.rs"
 name = "day-04"
 path = "src/day-04.rs"
 
+[[bin]]
+name = "day-05"
+path = "src/day-05.rs"
+
 [dependencies]
 indoc = "1.0.7"
 itertools = "0.10.5"
 once_cell = "1.16.0"
+regex = "1.7.0"
