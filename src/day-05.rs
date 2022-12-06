@@ -1,12 +1,12 @@
-use advent::read_input;
+use advent::input_lines;
 use itertools::Itertools;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use std::{collections::HashMap, iter::FromIterator, str::FromStr};
 
 fn main() -> std::io::Result<()> {
-    println!("Part1: {}", part1(read_input("inputs/day-05.txt")?));
-    println!("Part2: {}", part2(read_input("inputs/day-05.txt")?));
+    println!("Part1: {}", part1(input_lines("inputs/day-05.txt")?));
+    println!("Part2: {}", part2(input_lines("inputs/day-05.txt")?));
     Ok(())
 }
 
@@ -148,7 +148,7 @@ impl FromIterator<String> for Stacks {
 
 #[cfg(test)]
 mod tests {
-    use advent::static_input;
+    use advent::static_input_lines;
     use indoc::indoc;
 
     use super::*;
@@ -167,11 +167,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(part1(static_input(INPUT)), "CMZ");
+        assert_eq!(part1(static_input_lines(INPUT)), "CMZ");
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(part2(static_input(INPUT)), "MCD");
+        assert_eq!(part2(static_input_lines(INPUT)), "MCD");
     }
 }

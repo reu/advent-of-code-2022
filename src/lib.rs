@@ -4,7 +4,7 @@ use std::{
     path::Path,
 };
 
-pub fn read_input(path: impl AsRef<Path>) -> io::Result<impl Iterator<Item = String>> {
+pub fn input_lines(path: impl AsRef<Path>) -> io::Result<impl Iterator<Item = String>> {
     Ok(BufReader::new(fs::File::open(path)?)
         .lines()
         .filter_map(|line| line.ok()))
@@ -16,7 +16,7 @@ pub fn input_bytes(path: impl AsRef<Path>) -> io::Result<impl Iterator<Item = u8
         .filter_map(|byte| byte.ok()))
 }
 
-pub fn static_input(input: &'static str) -> impl Iterator<Item = String> {
+pub fn static_input_lines(input: &'static str) -> impl Iterator<Item = String> {
     input.lines().map(|line| line.to_owned())
 }
 

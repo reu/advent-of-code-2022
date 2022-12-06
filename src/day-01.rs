@@ -1,9 +1,9 @@
-use advent::read_input;
+use advent::input_lines;
 use itertools::Itertools;
 
 fn main() -> std::io::Result<()> {
-    println!("Part1: {}", part1(read_input("inputs/day-01.txt")?));
-    println!("Part2: {}", part2(read_input("inputs/day-01.txt")?));
+    println!("Part1: {}", part1(input_lines("inputs/day-01.txt")?));
+    println!("Part2: {}", part2(input_lines("inputs/day-01.txt")?));
     Ok(())
 }
 
@@ -44,7 +44,7 @@ fn part2(input: impl Iterator<Item = String>) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use advent::static_input;
+    use advent::static_input_lines;
     use indoc::indoc;
 
     use super::*;
@@ -68,11 +68,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(part1(static_input(INPUT)), 24000);
+        assert_eq!(part1(static_input_lines(INPUT)), 24000);
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(part2(static_input(INPUT)), 45000);
+        assert_eq!(part2(static_input_lines(INPUT)), 45000);
     }
 }
