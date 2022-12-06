@@ -1,6 +1,7 @@
 use std::{
-    collections::{HashSet, VecDeque},
+    collections::HashSet,
     iter::FromIterator,
+    mem::{self, MaybeUninit},
 };
 
 use advent::input_bytes;
@@ -13,7 +14,7 @@ fn main() -> std::io::Result<()> {
 
 fn part1(input: impl Iterator<Item = u8>) -> usize {
     input
-        .overlapping_chunks(4)
+        .overlapping_chunks::<4>()
         .position(|bytes| HashSet::<u8>::from_iter(bytes).len() == 4)
         .map(|pos| pos + 4)
         .unwrap_or_default()
@@ -21,46 +22,48 @@ fn part1(input: impl Iterator<Item = u8>) -> usize {
 
 fn part2(input: impl Iterator<Item = u8>) -> usize {
     input
-        .overlapping_chunks(14)
+        .overlapping_chunks::<14>()
         .position(|bytes| HashSet::<u8>::from_iter(bytes).len() == 14)
         .map(|pos| pos + 14)
         .unwrap_or_default()
 }
 
 trait OverlappingChunkExt: Iterator {
-    fn overlapping_chunks(self, size: usize) -> OverlappingChunk<Self>
+    fn overlapping_chunks<const N: usize>(self) -> OverlappingChunk<Self, N>
     where
         Self: Sized,
     {
         OverlappingChunk {
             iter: self,
-            buf: Default::default(),
-            size,
+            buf: unsafe { MaybeUninit::uninit().assume_init() },
+            written: 0,
         }
     }
 }
 
 impl<T> OverlappingChunkExt for T where T: Iterator {}
 
-struct OverlappingChunk<I: Iterator> {
+struct OverlappingChunk<I: Iterator, const N: usize> {
     iter: I,
-    buf: VecDeque<I::Item>,
-    size: usize,
+    buf: [MaybeUninit<I::Item>; N],
+    written: usize,
 }
-impl<I> Iterator for OverlappingChunk<I>
+
+impl<I, const N: usize> Iterator for OverlappingChunk<I, N>
 where
     I: Iterator,
     I::Item: Clone,
 {
-    type Item = Vec<I::Item>;
+    type Item = [I::Item; N];
 
     fn next(&mut self) -> Option<Self::Item> {
         for item in self.iter.by_ref() {
-            self.buf.push_front(item);
-            if self.buf.len() == self.size {
-                let chunk = self.buf.iter().cloned().collect::<Vec<_>>();
-                self.buf.pop_back();
-                return Some(chunk);
+            self.buf[self.written.clamp(0, N - 1)].write(item);
+            self.written += 1;
+            if self.written >= N {
+                let window = unsafe { mem::transmute_copy(&self.buf) };
+                self.buf.rotate_left(1);
+                return Some(window);
             }
         }
         None
