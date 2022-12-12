@@ -39,6 +39,10 @@ path = "src/day-08.rs"
 name = "day-09"
 path = "src/day-09.rs"
 
+[[bin]]
+name = "day-10"
+path = "src/day-10.rs"
+
 [dependencies]
 indoc = "1.0.7"
 itertools = "0.10.5"
