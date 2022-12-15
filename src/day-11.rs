@@ -1,6 +1,7 @@
 use std::{
+    cmp::Reverse,
     collections::{HashMap, VecDeque},
-    str::FromStr, cmp::Reverse,
+    str::FromStr,
 };
 
 use advent::input_lines;
@@ -8,11 +9,19 @@ use itertools::Itertools;
 
 fn main() -> std::io::Result<()> {
     println!("Part1: {}", part1(input_lines("inputs/day-11.txt")?));
-    // println!("Part2: {}", part2(input_lines("inputs/day-11.txt")?));
+    println!("Part2: {}", part2(input_lines("inputs/day-11.txt")?));
     Ok(())
 }
 
 fn part1(input: impl Iterator<Item = String>) -> usize {
+    rounds(input, 20, 3)
+}
+
+fn part2(input: impl Iterator<Item = String>) -> usize {
+    rounds(input, 10_000, 1)
+}
+
+fn rounds(input: impl Iterator<Item = String>, rounds: usize, divisor: u128) -> usize {
     let monkeys = input
         .group_by(|line| line.is_empty())
         .into_iter()
@@ -23,7 +32,12 @@ fn part1(input: impl Iterator<Item = String>) -> usize {
 
     let keys = monkeys.keys().sorted().copied().collect::<Vec<_>>();
 
-    (0..20)
+    let common_multiple = monkeys
+        .values()
+        .map(|monkey| monkey.divisor)
+        .product::<u128>();
+
+    (0..rounds)
         .flat_map(|_| keys.iter())
         .fold(monkeys, |mut monkeys, i| {
             let mut monkey = monkeys.get_mut(i).unwrap();
@@ -33,7 +47,8 @@ fn part1(input: impl Iterator<Item = String>) -> usize {
                 .drain(..)
                 .rev()
                 .map(|item| {
-                    let worry = (monkey.operation)(item) / 3;
+                    let item = item % common_multiple;
+                    let worry = (monkey.operation)(item) / divisor;
                     let target = if worry % monkey.divisor == 0 {
                         monkey.targets.0
                     } else {
@@ -56,56 +71,6 @@ fn part1(input: impl Iterator<Item = String>) -> usize {
         .sorted_by_key(|count| Reverse(*count))
         .take(2)
         .product()
-
-    // round(&mut monkeys);
-    //
-    // monkeys
-    //     .into_iter()
-    //     .map(|monkey| monkey.count)
-    //     .sorted()
-    //     .rev()
-    //     .take(2)
-    //     .product()
-}
-
-fn part2(input: impl Iterator<Item = String>) -> usize {
-    let mut monkeys = input
-        .group_by(|line| line.is_empty())
-        .into_iter()
-        .map(|(_, lines)| lines.collect::<String>())
-        .filter_map(|lines| lines.parse::<Monkey>().ok())
-        .collect::<Vec<_>>();
-
-    round(&mut monkeys);
-
-    monkeys
-        .into_iter()
-        .map(|monkey| monkey.count)
-        .sorted()
-        .rev()
-        .take(2)
-        .product()
-}
-
-// fn part2(input: impl Iterator<Item = String>) -> usize {
-//     todo!()
-// }
-
-fn round(monkeys: &mut Vec<Monkey>) {
-    for _ in 0..20 {
-        for i in 0..monkeys.len() {
-            monkeys[i].count += monkeys[i].items.len();
-            while let Some(item) = monkeys[i].items.pop_front() {
-                let worry = (monkeys[i].operation)(item) / 3;
-                let target = if worry % monkeys[i].divisor == 0 {
-                    monkeys[i].targets.0
-                } else {
-                    monkeys[i].targets.1
-                };
-                monkeys[target as usize].items.push_back(worry);
-            }
-        }
-    }
 }
 
 struct Monkey {
@@ -259,8 +224,8 @@ mod tests {
         assert_eq!(part1(static_input_lines(INPUT)), 10605);
     }
 
-    // #[test]
-    // fn test_part2() {
-    //     assert_eq!(part2(static_input_lines(INPUT)), 10605);
-    // }
+    #[test]
+    fn test_part2() {
+        assert_eq!(part2(static_input_lines(INPUT)), 2713310158);
+    }
 }
